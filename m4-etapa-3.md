@@ -1,82 +1,14 @@
 # M4 | Tarefa 2 - Modelando um sistema (Etapa 3 - Parcial)
 https://www.planttext.com
 ```
-
 @startuml
 
 title Instituição ABC - Class Diagram
 
-class AccountController { 
-+AccountService service 
-}
-class AlunoController { 
-+AlunoService service 
-}
-class ProfessorController { 
-+ProfessorService service 
-}
-class FuncionarioController { 
-+FuncionarioService service 
-}
-class CoordenadorController { 
-+CoordenadorService service 
-}
-class DepartamentoController { 
-+DepartamentoService service 
-}
-class CursoController { 
-+CursoService service 
-
-}
-
-class AccountService {
-+DbContext context
-+LoggerService logger
-}
-class AlunoService {
-+DbContext context
-+LoggerService logger
-}
-class ProfessorService {
-+DbContext context
-+LoggerService logger
-}
-class FuncionarioService {
-+DbContext context
-+LoggerService logger
-}
-class CoordenadorService {
-+DbContext context
-+LoggerService logger
-}
-class DepartamentoService {
-+DbContext context
-+LoggerService logger
-}
-class CursoService {
-+DbContext context
-+LoggerService logger
-}
-class LoggerService {
-+ILogger logger
-}
-
-class DbContext {
-+DbSet<Aluno> Alunos
-+DbSet<Professor> Professores
-+DbSet<Funcionario> Funcionarios
-+DbSet<Coordenador> Coordenadores
-+DbSet<Curso> Cursos
-+DbSet<Departamento> Departamentos
-+DbSet<Evento> Eventos
-+DbSet<Historico> Historicos
-+DbSet<Nota> Notas
-+DbSet<Especialidade> Especialidades
-+DbSet<Cargo> Cargos
-}
-
 class Aluno {
 +Int id
++Int idCurso
++Int idContrato
 +String name
 +String cpf
 +String email
@@ -85,6 +17,14 @@ class Aluno {
 +DateTime created_at
 +DateTime updated_at
 }
+
+class Contrato {
++Int id
++String url_contrato
++DateTime created_at
++DateTime updated_at
+}
+
 class Professor {
 +Int id
 +Int idDepartamento
@@ -143,7 +83,7 @@ class Historico {
 }
 class Nota {
 +Int id
-+Int idCurso
++Int idDisciplina
 +Decimal value
 }
 
@@ -160,8 +100,16 @@ class Curso {
 +DateTime created_at
 +DateTime updated_at
 }
-class Tarefa {
+class Disciplina {
++Int id
 +Int idCurso
++Int idProfessor
++String name
++DateTime created_at
++DateTime updated_at
+}
+class Tarefa {
++Int idDisciplina
 +String name
 +String description
 +DateTime deadline
@@ -170,8 +118,7 @@ class Tarefa {
 }
 class Evento {
 +Int id
-+Int idCurso
-+Int idProfessor
++Int idDisciplina
 +String name
 +String description
 +DateTime date
@@ -179,39 +126,18 @@ class Evento {
 +DateTime updated_at
 }
 
-AccountController "1" --> "1" AccountService
-ProfessorController "1" --> "1" ProfessorService
-AlunoController "1" --> "1" AlunoService
-CursoController "1" --> "1" CursoService
-FuncionarioController "1" --> "1" FuncionarioService
-DepartamentoController "1" --> "1" DepartamentoService
-CoordenadorController "1" --> "1" CoordenadorService
-
-AccountService "1" --> "1" LoggerService
-ProfessorService "1" --> "1" LoggerService
-AlunoService "1" --> "1" LoggerService
-CursoService "1" --> "1" LoggerService
-FuncionarioService "1" --> "1" LoggerService
-DepartamentoService "1" --> "1" LoggerService
-CoordenadorService "1" --> "1" LoggerService
-AccountService "1" --> "1" DbContext
-ProfessorService "1" --> "1" DbContext
-AlunoService "1" --> "1" DbContext
-CursoService "1" --> "1" DbContext
-FuncionarioService "1" --> "1" DbContext
-DepartamentoService "1" --> "1" DbContext
-CoordenadorService "1" --> "1" DbContext
-
 Departamento "1" *-- "0..1"  Curso
 Departamento "1" -- "0..1" Funcionario
 Departamento "1" -- "0..n" Professor
 Departamento "1" -- "1" Coordenador
 
-Curso "1..n" -- "0..n" Aluno 
-Curso "1..n" o-- "0..n" Evento
-Curso "1..n" o-- "0..n" Tarefa
-Curso "1..n" -- "0..n" Nota
-Evento "1..n" --> "1" Professor
+Curso "1..n" *-- "1..n" Disciplina
+
+Disciplina "1..n" -- "0..n" Aluno 
+Disciplina "1..n" o-- "0..n" Evento
+Disciplina "1..n" o-- "0..n" Tarefa
+Disciplina "1..n" -- "0..n" Nota
+Disciplina "1" --> "1" Professor
 
 
 Professor "1" *-- "0..n" Especialidade
@@ -219,6 +145,7 @@ Cargo "1" *-- "1..n" Professor
 Cargo "1" *-- "1..n" Funcionario
 Cargo "1" *-- "1..n" Coordenador
 Aluno o-- Historico
+Aluno "1..n" *-- "1..n" Contrato
 Historico "1"--> "1" Nota
 @enduml
 ```
